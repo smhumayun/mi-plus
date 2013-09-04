@@ -1,0 +1,57 @@
+    Pre-Requisite: {{{./cache.html}Object Scopes and Caching}}
+
+Method Resolution
+
+    When you make a method call on any Container (Child or Derived class's) object, the Container object has to
+    decide, which method of which Composed (Parent or Base class's) object should it delegate the call to? the
+    decision will be made, based on the method resolution strategy used by the <<<MIMethodResolver>>>
+    ({{{./apidocs/com/smhumayun/mi_plus/MIMethodResolver.html}JavaDoc}}
+    | {{{./xref/com/smhumayun/mi_plus/MIMethodResolver.html}Source Code}})
+    , configured through <<<MIFactory>>>
+    ({{{./apidocs/com/smhumayun/mi_plus/MIFactory.html}JavaDoc}}
+    | {{{./xref/com/smhumayun/mi_plus/MIFactory.html}Source Code}})
+    .
+
+    Project MI+ comes with a default out-of-the-box implementation of <<<MIMethodResolver>>>
+    ({{{./apidocs/com/smhumayun/mi_plus/MIMethodResolver.html}JavaDoc}}
+    | {{{./xref/com/smhumayun/mi_plus/MIMethodResolver.html}Source Code}})
+    called
+    <<<MIMethodResolverImpl>>>
+    ({{{./apidocs/com/smhumayun/mi_plus/impl/MIMethodResolverImpl.html}JavaDoc}}
+    | {{{./xref/com/smhumayun/mi_plus/impl/MIMethodResolverImpl.html}Source Code}})
+    , which resolves method based on the <<<MISupport>>>
+    ({{{./apidocs/com/smhumayun/mi_plus/MISuport.html}JavaDoc}}
+    | {{{./xref/com/smhumayun/mi_plus/MISupport.html}Source Code}})
+    annotation's attribute <<<parentClasses>>> "order" and method resolution strategy defined in
+    <<<getMatchingAccessibleMethod(Class, String, Class[])>>> method of class
+    <<<org.apache.commons.beanutils.MethodUtils>>> of Apache Commons BeanUtils API. The strategy works as follows:
+
+    * Iterate over composed objects
+
+    * For each composed object, check if there's a matching 'accessible' method based on the algorithm defined by
+    <<<getMatchingAccessibleMethod(Class, String, Class[])>>> method of class
+    <<<org.apache.commons.beanutils.MethodUtils>>> of Apache Commons BeanUtils API i.e.
+
+        * <"it finds an accessible method that matches the given name and has compatible
+        parameters. Compatible parameters mean that every method parameter is assignable from the given parameters.
+        In other words, it finds a method with the given name that will take the parameters given.">
+
+    * If a match is found, break the iteration and exit from the loop
+
+    * Return the corresponding composed object and the matched method
+
+    []
+
+    No additional configuration is required, if you are using this default out-of-the-box implementation.
+
+    You can also create your own custom <<<MIMethodResolver>>>
+    ({{{./apidocs/com/smhumayun/mi_plus/MIMethodResolver.html}JavaDoc}}
+    | {{{./xref/com/smhumayun/mi_plus/MIMethodResolver.html}Source Code}})
+    implementation and plug in either your or any third party implementation of <<<MIMethodResolver>>>
+    ({{{./apidocs/com/smhumayun/mi_plus/MIMethodResolver.html}JavaDoc}}
+    | {{{./xref/com/smhumayun/mi_plus/MIMethodResolver.html}Source Code}})
+    . An example of how to define and plug in a custom method resolver is available in {{{./examples.html}Examples}}.
+
+What's Next?
+
+    {{{./examples.html}Examples}}

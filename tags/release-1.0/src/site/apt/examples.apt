@@ -1,0 +1,269 @@
+Examples
+
+    [[1]] A child class inheriting from a single parent class
+
++---
+public interface Parent {
+    void parentMethod();
+}
+
+public class ParentImpl implements Parent {
+    public void parentMethod() {
+        System.out.println("parent method");
+    }
+}
+
+import com.smhumayun.mi_plus.MISupport;
+
+@MISupport(parentClasses = {ParentImpl.class})
+public interface Child extends ParentOne {
+}
++---
+
+    [[2]] A child class inheriting from multiple parent classes
+
++---
+public interface ParentOne {
+    void parentOneMethod();
+}
+
+public interface ParentTwo {
+    public void parentTwoMethod();
+}
+
+public class ParentOneImpl implements ParentOne {
+    public void parentOneMethod() {
+        System.out.println("parent one method");
+    }
+}
+
+public class ParentTwoImpl implements ParentTwo {
+    public void parentTwoMethod() {
+        System.out.println("parent two method");
+    }
+}
+
+import com.smhumayun.mi_plus.MISupport;
+
+@MISupport(parentClasses = {ParentOneImpl.class, ParentTwoImpl.class})
+public interface Child extends ParentOne, ParentTwo {
+}
++---
+
+    [[3]] A child class (having it's own implementation as well) inheriting from multiple parent classes
+
++---
+public interface ParentOne {
+    void parentOneMethod();
+}
+
+public interface ParentTwo {
+    public void parentTwoMethod();
+}
+
+public class ParentOneImpl implements ParentOne {
+    public void parentOneMethod() {
+        System.out.println("parent one method");
+    }
+}
+
+public class ParentTwoImpl implements ParentTwo {
+    public void parentTwoMethod() {
+        System.out.println("parent two method");
+    }
+}
+
+import com.smhumayun.mi_plus.MISupport;
+
+@MISupport(parentClasses = {ChildImpl.class, ParentOneImpl.class, ParentTwoImpl.class})
+public interface Child extends ParentOne, ParentTwo {
+    void childMethod();
+}
+
+public class ChildImpl implements Child {
+    public void childMethod() {
+        System.out.println("child method");
+    }
+}
+
++---
+
+    [[4]] Using scope: <<<SINGLETON_CONTAINER_SINGLETON_COMPOSED>>>
+
++---
+public interface SomeSuperType {
+    public void someSuperTypeMethod();
+}
+
+public class SomeSuperTypeImpl implements SomeSuperType {
+    public void someSuperTypeMethod() {
+        System.out.println("some super type method");
+    }
+}
+
+import com.smhumayun.mi_plus.MISupport;
+
+//note we have not mentioned any scope explicitly because default scope is SINGLETON_CONTAINER_SINGLETON_COMPOSED
+@MISupport(parentClasses = {SomeSuperTypeImpl.class})
+public interface SomeType extends SomeSuperType {
+}
+
+import com.smhumayun.mi_plus.MIFactory;
+
+public class Test {
+    public static void main (String[] s) {
+        MIFactory miFactory = new MIFactory();
+        SomeType someTypeObj1 = miFactory.newInstance(SomeType.class);
+        SomeType someTypeObj2 = miFactory.newInstance(SomeType.class);
+        boolean equal = (someTypeObj1 == someTypeObj2); //TRUE
+    }
+}
++---
+
+    [[5]] Using scope: <<<PROTOTYPE_CONTAINER_SINGLETON_COMPOSED>>>
+
++---
+public interface SomeSuperType {
+    public SomeSuperType getComposedObj ();
+}
+
+public class SomeSuperTypeImpl implements SomeSuperType {
+    public SomeSuperType getComposedObj () {
+        return this;
+    }
+}
+
+import com.smhumayun.mi_plus.MISupport;
+
+@MISupport(parentClasses = {SomeSuperTypeImpl.class}, scope = MIObjectScope.PROTOTYPE_CONTAINER_SINGLETON_COMPOSED)
+public interface SomeType extends SomeSuperType {
+}
+
+import com.smhumayun.mi_plus.MIFactory;
+
+public class Test {
+    public static void main (String[] s) {
+        MIFactory miFactory = new MIFactory();
+        SomeType someTypeObj1 = miFactory.newInstance(SomeType.class);
+        SomeType someTypeObj2 = miFactory.newInstance(SomeType.class);
+        boolean equal = (someTypeObj1 == someTypeObj2); //FALSE
+        equal = (someTypeObj1.getComposedObj() == someTypeObj2.getComposedObj()); //TRUE
+    }
+}
++---
+
+    [[6]] Using scope: <<<PROTOTYPE_CONTAINER_PROTOTYPE_COMPOSED>>>
+
++---
+public interface SomeSuperType {
+    public SomeSuperType getComposedObj ();
+}
+
+public class SomeSuperTypeImpl implements SomeSuperType {
+    public SomeSuperType getComposedObj () {
+        return this;
+    }
+}
+
+import com.smhumayun.mi_plus.MISupport;
+
+@MISupport(parentClasses = {SomeSuperTypeImpl.class}, scope = MIObjectScope.PROTOTYPE_CONTAINER_PROTOTYPE_COMPOSED)
+public interface SomeType extends SomeSuperType {
+}
+
+import com.smhumayun.mi_plus.MIFactory;
+
+public class Test {
+    public static void main (String[] s) {
+        MIFactory miFactory = new MIFactory();
+        SomeType someTypeObj1 = miFactory.newInstance(SomeType.class);
+        SomeType someTypeObj2 = miFactory.newInstance(SomeType.class);
+        boolean equal = (someTypeObj1 == someTypeObj2); //FALSE
+        equal = (someTypeObj1.getComposedObj() == someTypeObj2.getComposedObj()); //FALSE
+    }
+}
++---
+
+    [[7]] Eager Validation (Recommended)
+
++---
+import com.smhumayun.mi_plus.MIFactory;
+import com.smhumayun.mi_plus.testdata.Child1;
+
+public class Test {
+    public static void main (String[] s) {
+        //eager validation - validation happens as soon as following statement executes
+        MIFactory miFactory = new MIFactory(Arrays.asList("com.smhumayun.mi_plus.testdata"));
+        miFactory.newInstance(Child1.class); //validation will be skipped because it has been pre-validated above
+    }
+}
++---
+
+    [[8]] Lazy Validation
+
++---
+import com.smhumayun.mi_plus.MIFactory;
+import com.smhumayun.mi_plus.testdata.Child1;
+
+public class Test {
+    public static void main (String[] s) {
+        //lazy validation - no validation will be done in following statement
+        MIFactory miFactory = new MIFactory(Arrays.asList("com.smhumayun.mi_plus.testdata"));
+        miFactory.newInstance(Child1.class); //first call against Child1; validation will happen here
+        miFactory.newInstance(Child1.class); //any subsequent calls after first call; validation will be skipped
+    }
+}
++---
+
+    [[9]] Using custom <<<MIObjectCache>>>
+
++---
+import com.smhumayun.mi_plus.MIObjectCache;
+import com.smhumayun.mi_plus.MIException;
+
+public class CustomCache implements MIObjectCache {
+    public Object getCachedMiContainerProxy(Class miContainerClass) throws MIException {
+        //your custom implementation comes here
+    }
+    public void cacheMiContainerProxy(Class miContainerClass, Object miContainerProxy) throws MIException {
+        //your custom implementation comes here
+    }
+    public LinkedHashMap<Class, Object> getCachedComposedObjects (Class miContainerClass) throws MIException {
+        //your custom implementation comes here
+    }
+    public void cacheComposedObjects (Class miContainerClass, LinkedHashMap<Class, Object> composedObjects) throws MIException {
+        //your custom implementation comes here
+    }
+}
+
+import com.smhumayun.mi_plus.MIFactory;
+
+public class Test {
+    public static void main (String[] s) {
+        MIFactory miFactory = new MIFactory(new CustomCache());
+    }
+}
++---
+
+    [[10]] Using custom <<<MIMethodResolver>>>
+
++---
+import com.smhumayun.mi_plus.MIMethodResolver;
+import com.smhumayun.mi_plus.MIException;
+
+public class CustomMethodResolver implements MIMethodResolver {
+    public Pair<Object, Method> resolve (Class miContainerClass, LinkedHashMap<Class, Object> composedObjects
+                       , Method methodCall, Object[] methodCallArgs) throws MIException {
+        //your custom implementation comes here
+    }
+}
+
+import com.smhumayun.mi_plus.MIFactory;
+
+public class Test {
+    public static void main (String[] s) {
+        MIFactory miFactory = new MIFactory(new CustomMethodResolver());
+    }
+}
++---
+
