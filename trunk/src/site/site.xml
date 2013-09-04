@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/DECORATION/1.3.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.3.0 http://maven.apache.org/xsd/decoration-1.3.0.xsd"
+        name="Project MI+">
+
+    <bannerLeft>
+        <src>/images/project mi+ logo.png</src>
+    </bannerLeft>
+
+    <body>
+
+        <menu name="Download Project MI+">
+            <item name="Downloads" href="downloads.html"/>
+        </menu>
+        <menu name="User Guide">
+            <item name="Getting Started" href="index.html"/>
+            <item name="Eager vs Lazy Validation" href="validation.html"/>
+            <item name="Object Scopes and Caching" href="cache.html"/>
+            <item name="Method Resolution" href="resolver.html"/>
+            <item name="Examples" href="examples.html"/>
+        </menu>
+        <menu name="MI+ Architecture">
+            <item name="Under The Hood" href="arch.html"/>
+        </menu>
+        <menu name="More Documentation">
+            <item name="Javadocs" href="./apidocs/index.html"/>
+            <item name="Tests Javadocs" href="./testapidocs/index.html"/>
+            <item name="Source Code" href="./xref/index.html"/>
+            <item name="Tests Source Code" href="./xref-test/index.html"/>
+        </menu>
+        <menu name="Get Involved">
+            <item name="Contribute" href="contribute.html"/>
+            <item name="Mailing Lists" href="./mail-lists.html"/>
+        </menu>
+        <menu ref="reports"/>
+    </body>
+
+</project>
