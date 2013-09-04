@@ -1,0 +1,25 @@
+Project MI+ Architecture - Under The Hood
+
+    Project MI+ uses following key concepts:
+
+    * Object Composition
+
+    * Method Delegation
+
+    * Program to Interface
+
+    * Reflection
+
+    * Proxy
+
+    * Annotation
+
+    []
+
+Eager Validation
+
+[./images/diagrams/Project MI+ Architecture - Eager Validation.png] Eager Validation
+
+MIFactory.newInstance()
+
+[./images/diagrams/Project MI+ Architecture - MIFactory_newInstance.png] MIFactory.newInstance()

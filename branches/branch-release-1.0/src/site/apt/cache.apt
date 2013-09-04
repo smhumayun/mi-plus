@@ -1,0 +1,108 @@
+    Pre-Requisite: {{{./validation.html}Eager vs Lazy Validation}}
+
+Object Scopes and Caching
+
+    Consider the <<<Child>>> interface, which we created in our {{{./index.html}Getting Started}} example:
+
++---
+import com.smhumayun.mi_plus.MISupport;
+
+@MISupport(parentClasses = {ParentOneImpl.class, ParentTwoImpl.class})
+public interface Child extends ParentOne, ParentTwo {
+}
++---
+
+    Every time you create a <<<newInstance>>> using the <<<MIFactory>>>
+    ({{{./apidocs/com/smhumayun/mi_plus/MIFactory.html}JavaDoc}}
+    | {{{./xref/com/smhumayun/mi_plus/MIFactory.html}Source Code}})
+    , you will get the same <<<Child>>> object.
+
++---
+import com.smhumayun.mi_plus.MIFactory;
+
+...
+    MIFactory miFactory = new MIFactory();
+    Child child1 = miFactory.newInstance(Child.class);
+    Child child2 = miFactory.newInstance(Child.class);
+    boolean same = (child1 == child2); //yields TRUE
+...
++---
+
+    Why? because we didn't mention any <scope>, <<<MIObjectScope>>>
+    ({{{./apidocs/com/smhumayun/mi_plus/MIObjectScope.html}JavaDoc}}
+    | {{{./xref/com/smhumayun/mi_plus/MIObjectScope.html}Source Code}})
+    , in our <<<Child>>> interface above. The default scope for such cases is
+    <<<SINGLETON_CONTAINER_SINGLETON_COMPOSED>>> and therefore whenever we call <<<MIFactory>>>'s
+    ({{{./apidocs/com/smhumayun/mi_plus/MIFactory.html}JavaDoc}}
+    | {{{./xref/com/smhumayun/mi_plus/MIFactory.html}Source Code}})
+    <<<newInstance>>> against our <<<Child>>>, we will get the same (singleton) object in return.
+
+Container and Composed Objects
+
+    All objects of a derived or child class that extends/inherits from multiple parent or base classes are referred as
+    "<<Container>>" objects. These Container objects compose one object each, of all the parent or base classes. And
+    hence, those parent or base class objects are called "<<Composed>>" objects.
+
+    For simplicity's sake, we'll stick to this simple description for now. If you want to know how Project MI+ works,
+    please refer to {{{./arch.html}Project MI+ Architecture: Under The Hood}}.
+
+    Now, if we look at <<<MIObjectScope>>>
+    ({{{./apidocs/com/smhumayun/mi_plus/MIObjectScope.html}JavaDoc}}
+    | {{{./xref/com/smhumayun/mi_plus/MIObjectScope.html}Source Code}})
+    , we have three different kind of scopes:
+
+    [[1]] <<<SINGLETON_CONTAINER_SINGLETON_COMPOSED>>> - means both the Container (Child or Derived class's) object and
+    the Composed (Parent or Base class's) objects will be cached as singleton objects in cache. All calls to
+    <<<newInstance()>>> method of <<<MIFactory>>>
+    ({{{./apidocs/com/smhumayun/mi_plus/MIFactory.html}JavaDoc}}
+    | {{{./xref/com/smhumayun/mi_plus/MIFactory.html}Source Code}})
+    will always return the same singleton object.
+
+    [[2]] <<<PROTOTYPE_CONTAINER_SINGLETON_COMPOSED>>> - means the Container (Child or Derived class's) object will not
+    be cached and will be created afresh on every call, while the Composed (Parent or Base class's) objects will be
+    cached as singleton objects in cache. All calls to <<<newInstance()>>> method of <<<MIFactory>>>
+    ({{{./apidocs/com/smhumayun/mi_plus/MIFactory.html}JavaDoc}}
+    | {{{./xref/com/smhumayun/mi_plus/MIFactory.html}Source Code}})
+    will always return different and unique object, containing similar singleton composed objects.
+
+    [[3]] <<<PROTOTYPE_CONTAINER_PROTOTYPE_COMPOSED>>> - means both the Container (Child or Derived class's) object and
+    the Composed (Parent or Base class's) objects will not be cached and will be created afresh on every call. All calls
+    to <<<newInstance()>>> method of <<<MIFactory>>>
+    ({{{./apidocs/com/smhumayun/mi_plus/MIFactory.html}JavaDoc}}
+    | {{{./xref/com/smhumayun/mi_plus/MIFactory.html}Source Code}})
+    will always return different and unique object, containing different and unique composed objects.
+
+Caching
+
+    Based on different kinds of scopes available via <<<MIObjectScope>>>
+    ({{{./apidocs/com/smhumayun/mi_plus/MIObjectScope.html}JavaDoc}}
+    | {{{./xref/com/smhumayun/mi_plus/MIObjectScope.html}Source Code}})
+    , mentioned above, the <<<MIFactory>>>
+    ({{{./apidocs/com/smhumayun/mi_plus/MIFactory.html}JavaDoc}}
+    | {{{./xref/com/smhumayun/mi_plus/MIFactory.html}Source Code}})
+    uses built-in architecture support for caching via <<<MIObjectCache>>>
+    ({{{./apidocs/com/smhumayun/mi_plus/MIObjectCache.html}JavaDoc}}
+    | {{{./xref/com/smhumayun/mi_plus/MIObjectCache.html}Source Code}})
+    , to cache different type of objects.
+
+    Project MI+ comes with a default out-of-the-box implementation of <<<MIObjectCache>>>
+    ({{{./apidocs/com/smhumayun/mi_plus/MIObjectCache.html}JavaDoc}}
+    | {{{./xref/com/smhumayun/mi_plus/MIObjectCache.html}Source Code}})
+    called
+    <<<MIObjectInMemoryCache>>>
+    ({{{./apidocs/com/smhumayun/mi_plus/impl/MIObjectInMemoryCache.html}JavaDoc}}
+    | {{{./xref/com/smhumayun/mi_plus/impl/MIObjectInMemoryCache.html}Source Code}})
+    , which uses In-Memory <<<java.util.HashMap>>> data structures to cache different type of objects. No additional
+    configuration is required, if you are using this default out-of-the-box implementation.
+
+    You can also create your own custom <<<MIObjectCache>>>
+    ({{{./apidocs/com/smhumayun/mi_plus/MIObjectCache.html}JavaDoc}}
+    | {{{./xref/com/smhumayun/mi_plus/MIObjectCache.html}Source Code}})
+    implementation and plug in either your or any third party implementation of <<<MIObjectCache>>>
+    ({{{./apidocs/com/smhumayun/mi_plus/MIObjectCache.html}JavaDoc}}
+    | {{{./xref/com/smhumayun/mi_plus/MIObjectCache.html}Source Code}})
+    . An example of how to define and plug in a custom cache is available in {{{./examples.html}Examples}}.
+
+What's Next?
+
+    {{{./resolver.html}Method Resolution}}
