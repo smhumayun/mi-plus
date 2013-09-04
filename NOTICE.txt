@@ -1,0 +1,13 @@
+This software uses following third party software under license(s) mentioned below:
+
+BeanShell - Under License: GNU LESSER GENERAL PUBLIC LICENSE
+Commons BeanUtils - Under License: The Apache Software License, Version 2.0
+Commons Logging - Under License: The Apache Software License, Version 2.0
+Hamcrest Core - Under License: BSD style
+INFOMAS ASL :: Annotation Detector - Under License: The Apache Software License, Version 2.0
+JCommander - Under License: The Apache Software License, Version 2.0
+JUnit - Under License: Common Public License Version 1.0
+Project MI+ - Under License: The Apache Software License, Version 2.0
+SnakeYAML - Under License: Apache License Version 2.0
+TestNG - Under License: Apache License, Version 2.0
+
