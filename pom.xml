@@ -414,6 +414,31 @@
                             <valueFile>src/site/xref-footer</valueFile>
                         </configuration>
                     </execution>
+                    <!-- TODO following execution should be removed once we change the hosting company-->
+                    <execution>
+                        <id>Replace words to by-pass hosting server's content filter</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>target/site/xref/com/smhumayun/mi_plus/MIFactory.html</include>
+                                <include>target/site/xref/com/smhumayun/mi_plus/MIContainerSupport.html</include>
+                            </includes>
+                            <unescape>true</unescape>
+                            <replacements>
+                                <replacement>
+                                    <token>Proxy</token>
+                                    <value>P r o x y</value>
+                                </replacement>
+                                <replacement>
+                                    <token>proxy</token>
+                                    <value>p r o x y</value>
+                                </replacement>
+                            </replacements>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>

@@ -28,9 +28,10 @@
             <item name="Tests Javadocs" href="./testapidocs/index.html"/>
             <item name="Source Code" href="./xref/index.html"/>
             <item name="Tests Source Code" href="./xref-test/index.html"/>
+            <item name="Source Repository" href="source-repository.html"/>
+            <item name="Issue Tracking" href="issue-tracking.html"/>
         </menu>
         <menu name="Get Involved">
-            <item name="Contribute" href="contribute.html"/>
             <item name="Mailing Lists" href="./mail-lists.html"/>
         </menu>
         <menu ref="reports"/>
