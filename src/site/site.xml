@@ -21,6 +21,7 @@
             <item name="Examples" href="examples.html"/>
         </menu>
         <menu name="MI+ Architecture">
+            <item name="Motivation" href="motivation.html"/>
             <item name="Under The Hood" href="arch.html"/>
         </menu>
         <menu name="More Documentation">
