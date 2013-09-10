@@ -1,7 +1,8 @@
 About Project MI+
 
-    Project MI+ add multiple inheritance support to your java classes, so they can (functionally) "<<extend>>"
-    <(read inherit)> from multiple parent classes.
+    Project MI+ is all about making Java's Multiple <Interface> Inheritance more "<<adaptable>>" and in doing so, it
+    will make your java classes (functionally) "<<extend>>" <(read inherit)> from multiple parent classes with lesser
+    amount of code and maintenance. Read more about the {{{./motivation.html}Motivation behind Project MI+}}
 
 Getting Started
 
@@ -22,8 +23,8 @@ public class ParentTwo {
 }
 +---
 
-    First we will 'extract' interfaces from the parent classes mentioned above. [Project MI+ promotes the use of
-    classic design principle <<'Program to Interface'>>]
+    The closest emulation of Multiple (Implementation) Inheritance in Java, can be done, using (1). Multiple <Interface>
+    Inheritance, (2). Objection Composition and (3). Method Delegation, as follows:
 
 +---
 public interface ParentOne {
@@ -35,36 +36,47 @@ public interface ParentTwo {
 }
 
 public class ParentOneImpl implements ParentOne {
+    @override
     public void parentOneMethod() {
         System.out.println("parent one method");
     }
 }
 
 public class ParentTwoImpl implements ParentTwo {
+    @Override
     public void parentTwoMethod() {
         System.out.println("parent two method");
     }
 }
+
+public interface ChildOne extends ParentOne, ParentTwo { //(1). multiple interface inheritance
+}
+
+public class ChildOneImpl implements Child1 {
+
+    private ParentOneImpl delegateParentOneImpl; //(2). object composition
+    private ParentTwoImpl delegateParentTwoImpl; //(2). object composition
+
+    @override
+    public void parentOneMethod() {
+        delegateParentOneImpl.parentOneMethod(); //(3). method delegation
+    }
+
+    @override
+    public void parentTwoMethod() {
+        delegateParentTwoImpl.parentTwoMethod(); //(3). method delegation
+    }
+
+}
 +---
 
-    Now we can simply:
-
-    [[1]] Create a <<<Child>>> interface,
-
-    [[2]] Extend it from parent interfaces,
-
-    [[3]] Add "Multiple Inheritance Support" by annotating the <<<Child>>> interface with <<<MISupport>>>
-    ({{{./apidocs/com/smhumayun/mi_plus/MISupport.html}JavaDoc}}
-    | {{{./xref/com/smhumayun/mi_plus/MISupport.html}Source Code}})
-    annotation.
-
-    []
+    Using Project MI+, we can define the same <<<ChildOne>>> with lesser amount of code, as follows:
 
 +---
 import com.smhumayun.mi_plus.MISupport;
 
 @MISupport(parentClasses = {ParentOneImpl.class, ParentTwoImpl.class})
-public interface Child extends ParentOne, ParentTwo {
+public interface ChildTwo extends ParentOne, ParentTwo {
 }
 +---
 
@@ -82,13 +94,17 @@ import com.smhumayun.mi_plus.MIFactory;
 
 ...
     MIFactory miFactory = new MIFactory();
-    Child child = miFactory.newInstance(Child.class);
-    child.parentOneMethod();
-    child.parentTwoMethod();
+    ChildTwo childTwo = miFactory.newInstance(Child.class);
+    childTwo.parentOneMethod();
+    childTwo.parentTwoMethod();
 ...
 +---
 
-    The <<<child>>> now refers to an object which <(functionally)> inherits methods from all the parent classes.
+    The <<<childTwo>>> now refers to an object which <(functionally)> inherits methods from all the parent classes.
+
+    Most importantly, if you add a new method, or update the signature of existing method or remove any existing method,
+    from either of the parents, those changes will be reflected automatically in the <<<ChildTwo>>>, but the very same
+    changes will break <<<ChildOne>>>. Why? {{{./motivation.html} read more here}}.
 
 What's Next?
 

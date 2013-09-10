@@ -1,0 +1,97 @@
+Motivation
+
+    If there's one feature that I like about <<Multiple Inheritance>>, that would be "<<adaptability>>". When a child is
+    inherited from multiple parent, child will automatically "<<adapts>>" to all the changes made in all the parents,
+    from then and onwards. No explicit changes in child is required, in order to keep it "compatible" or "in-sync" with
+    the parents.
+
+    How is it different in Java? in Java, the concept of Multiple Inheritance is further split up into <<Multiple
+    Interface Inheritance>> and <<Multiple Implementation Inheritance>> specifically. Java supports the former and
+    relinquish the later.
+
+    Consider a typical example of <<<TypeC>>> inheriting from <<<TypeA>>> and <<<TypeB>>>. In Java, the closest you can
+    come to Multiple Implementation Inheritance (functionally) is as follows:
+
++---
+public interface TypeA { void methodA(); }
+public interface TypeB { void methodB(); }
+public interface TypeC extends TypeA, TypeB { void methodA(); } //multiple interface inheritance
+
+public class TypeAImpl implements TypeA { @override public void methodA() { System.out.println("method A"); } }
+public class TypeBImpl implements TypeB { @override public void methodB() { System.out.println("method B"); } }
+
+public class TypeCImpl implements TypeC (
+
+	private TypeAImpl delegateAImpl; //object composition
+	private TypeBImpl delegateBImpl; //object composition
+
+	@override
+	public void methodA() { delegateAImpl.methodA(); } //method delegation
+
+	@override
+	public void methodB() { delegateBImpl.methodB(); } //method delegation
+
+	@override
+	public void methodC() { System.out.println("method C"); }
+
+}
++---
+
+Problem? lack of "adaptability"
+
+    In our example above, we try to emulate Multiple Implementation Inheritance as closely as possible using:
+
+        * Multiple Interface Inheritance
+
+        * Object Composition
+
+        * Method Delegation
+
+        []
+
+    However, contrary to the Multiple Implementation Inheritance, the child still, will not "adapts" to any of the
+    following changes made to the parents. Even worst, these changes will break the child:
+
+    * Add a new method - if we declare a new <<<methodA2>>> in <<<TypeA>>> and define its implementation in
+    <<<TypeAImpl>>>. <<<TypeC>>> will instantly adapts to the change in <<<TypeA>>> due to multiple interface
+    inheritance. And, because <<<TypeCImpl implements TypeC>>>, it will also adapts to the newly declared <<<methodA2>>>
+    in <<<TypeA>>>. And so, <<<TypeCImpl>>> will break instantly because it either needs (a). the implementation of
+    <<<methodA2>>> to be defined OR (b). to change its type from a concrete class to an <<<abstract>>> class.
+
+    * Update the signature of an existing method - if we change signature of <<<methodB>>> in <<<TypeB>>> from
+    "<<<void methodB()>>>" to "<<<void methodB(int b)>>>" and similarly change its implementation in <<<TypeBImpl>>>.
+    <<<TypeC>>> will instantly adapts to the change in <<<TypeB>>> due to multiple interface inheritance. And, because
+    <<<TypeCImpl implements TypeC>>>, it will also adapts to the recently changed <<<methodB>>> in <<<TypeB>>>. And so,
+    <<<TypeCImpl>>> will break instantly because it either needs (a). the implementation of "<<<void methodB(int b)>>>"
+    to be defined OR (b). to change its type from a concrete class to an <<<abstract>>> class. Also, note that the
+    <<<methodB>>> implementation in <<<TypeCImpl>>> will now start complaining about the erroneous code
+    "<<<delegateBImpl.methodB()>>>" because such a method does not exists in <<<TypeBImpl>>> any more.
+
+    * Remove an existing method - if we remove <<<methodB>>> declaration in <<<TypeB>>> and implementation in
+	<<<TypeBImpl>>>. <<<TypeC>>> will instantly adapts to the change in <<<TypeB>>> due to multiple interface
+	inheritance. And, because <<<TypeCImpl implements TypeC>>>, it will also adapts to the recent removal of
+	<<<methodB>>> in <<<TypeB>>> and <<<TypeBImpl>>>. And so, <<<TypeCImpl>>> will break instantly because the
+	<<<methodB>>> implementation in <<<TypeCImpl>>> will now start complaining about the erroneous code
+	"<<<delegateBImpl.methodB()>>>" because such a method does not exists in <<<TypeBImpl>>> any more.
+
+	[]
+
+    All of the changes above require mandatory changes in child as well and this sucks big time! any change to any one
+    of the parent components, will "<<force>>" a ripple effect of mandatory changes to all of the child components down
+    the hierarchy and if you don't do that, it'll break them apart.
+
+    Let me raise the bar a little more, assume if, <<<TypeA>>> and <<<TypeB>>> belongs to <<publicly published API>>s,
+    <<<ApiTypeA-1.0.jar>>> and <<<ApiTypeB-1.0.jar>>>. And then one or more of the changes mentioned above is made to
+    those APIs in their next releases, <<<ApiTypeA-2.0.jar>>> and <<<ApiTypeB-2.0.jar>>> respectively. Now, if you
+    don't want the changes, that's fine, you can keep pointing to the older version <<<1.0>>> of the dependencies and
+    there won't be any issues. But, most likely in a real world scenario, at some point you need the upgrade to newer
+    versions of the dependencies. But, you can not do that, until and unless you have the necessary resources to make
+    appropriate changes in your code otherwise it will break your code.
+
+    Think of those cases specifically, where only additions are being made to relatively newer component(s) in order to
+    add more functionality to make them feature rich. Additional methods/features, with out any changes or removals to
+    existing ones, should not have any impact, the transition should be seamless, but this is not the case as shown
+    above.
+
+    So, to make Multiple Interface Inheritance more "<<adaptable>>" and to bring it (functionally) one step closer to
+    Multiple Implementation Inheritance with out the negatives of the later, becomes the motivation of <<Project MI+>>.
