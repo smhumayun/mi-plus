@@ -1,8 +1,8 @@
 About Project MI+
 
     Project MI+ is all about making Java's Multiple <Interface> Inheritance more "<<adaptable>>" and in doing so, it
-    will make your java classes (functionally) "<<extend>>" <(read inherit)> from multiple parent classes with lesser
-    amount of code and maintenance. Read more about the {{{./motivation.html}Motivation behind Project MI+}}
+    will help you achieve multiple inheritance (functionally) with lesser amount of code and maintenance. Read more
+    about the {{{./motivation.html}Motivation behind Project MI+}}
 
 Getting Started
 
