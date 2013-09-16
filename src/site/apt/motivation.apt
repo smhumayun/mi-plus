@@ -5,7 +5,7 @@ Motivation
     from then and onwards. No explicit changes in child is required, in order to keep it "compatible" or "in-sync" with
     the parents.
 
-    How is it different in Java? in Java, the concept of Multiple Inheritance is further split up into <<Multiple
+    How is it different in Java? Well, the concept of Multiple Inheritance in OOP, further splits up into <<Multiple
     Interface Inheritance>> and <<Multiple Implementation Inheritance>> specifically. Java supports the former and
     relinquish the later.
 
